@@ -1,15 +1,21 @@
 <script setup>
-import { ref ,onMounted} from 'vue';
-import axios from 'axios'
+import { ref, onMounted } from 'vue';
+import { queryAllApi } from '@/api/dept'
 
 onMounted(() => {
   search()
 })
 const search = async () => {
-  const result = await axios.get('https://m1.apifoxmock.com/m1/6430447-6127879-default/detps')
-  if (result.data.code) {
-    deptList.value = result.data.data
+  // const result = await axios.get('https://m1.apifoxmock.com/m1/6430447-6127879-default/detps')
+  // if (result.data.code) {
+  //   deptList.value = result.data.data
+  // }
+
+  const result = await queryAllApi()
+  if (result.code) {
+    deptList.value = result.data
   }
+
 }
 
 
@@ -25,12 +31,16 @@ const deptList = ref([])
   <div>
     <el-table :data="deptList" border style="width: 100%">
       <el-table-column type="index" width="100" align="center" />
-      <el-table-column prop="name" label="部门名称" width="260" align="center"/>
-      <el-table-column prop="updateTime" label="最后操作时间" width="300" align="center"/>
-      <el-table-column label="操作"align="center">
+      <el-table-column prop="name" label="部门名称" width="260" align="center" />
+      <el-table-column prop="updateTime" label="最后操作时间" width="300" align="center" />
+      <el-table-column label="操作" align="center">
         <template #default="scope">
-          <el-button type="primary" size="small"> <el-icon><Edit /></el-icon>编辑</el-button>
-          <el-button type="danger" size="small"> <el-icon><Delete /></el-icon>删除</el-button>
+          <el-button type="primary" size="small"> <el-icon>
+              <Edit />
+            </el-icon>编辑</el-button>
+          <el-button type="danger" size="small"> <el-icon>
+              <Delete />
+            </el-icon>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
