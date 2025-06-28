@@ -20,13 +20,25 @@ const search = async () => {
 
 
 const deptList = ref([])
+
+// dialog对话框
+const dialogFormVisible = ref(false)
+const dept = ref({
+  name: ''
+}) 
+const save = () => {
+  dialogFormVisible.value = false
+}
+
+
 </script>
 
+
 <template>
-  <h1>部门管理</h1>
+
+  <!-- 表格 -->
   <div class="container">
     <el-button type="primary"> + 新增部门</el-button>
-
   </div>
   <div>
     <el-table :data="deptList" border style="width: 100%">
@@ -46,8 +58,22 @@ const deptList = ref([])
     </el-table>
   </div>
 
-
+  <!-- 对话框组件 -->
+  <el-dialog v-model="dialogFormVisible" title="新增部门" width="500">
+    <el-form :model="dept">
+      <el-form-item label="部门名称 name" :label-width="formLabelWidth">
+        <el-input v-model="dept.name" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="save">确定</el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
+
 
 <style scoped>
 .container {
