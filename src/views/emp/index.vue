@@ -1,7 +1,7 @@
 <script setup>
 import { Search } from '@element-plus/icons-vue';
 import { ref, onMounted, watch } from 'vue'
-import { queryPageApi, addApi, queryInfoApi, updateApi } from '@/api/emp'
+import { queryPageApi, addApi, deleteApi, queryInfoApi, updateApi } from '@/api/emp'
 import { queryAllApi as queryAllDeptApi } from '@/api/dept'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -241,6 +241,75 @@ const edit = async (id) => {
   }
 }
 
+// 删除
+const deleteById = async (id) => {
+  ElMessageBox.confirm('是否删除该员工？', '提示',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(async () => {
+      const result = await deleteApi(id)
+      console.log(id)
+      console.log(result)
+      if (result.code) {
+        ElMessage({
+          type: 'success',
+          message: '删除成功',
+        })
+        search()
+      }
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消删除',
+      })
+    })
+}
+
+const selectIds = ref([
+
+])
+const handleSelectionChange = (selection) => {
+  selectIds.value = selection.map(item => item.id)
+}
+
+const deleteByIds = async () => {
+  ElMessageBox.confirm('是否删除选中员工？', '提示',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(async () => {
+      if (selectIds.value && selectIds.value.length > 0) {
+        const result = await deleteApi(selectIds.value)
+        if (result.code) {
+          ElMessage({
+            type: 'success',
+            message: '删除成功',
+          })
+          search()
+        } else {
+           ElMessage({
+            type: 'error',
+            message: result.msg,
+          })
+        }
+      }else{
+        ElMessage({
+            type: 'warning',
+            message: '请选择要删除的记录',
+          })
+      }
+    }
+  )
+}
+
 </script>
 
 <template>
@@ -270,12 +339,12 @@ const edit = async (id) => {
   <!-- 功能按钮 -->
   <div class="container">
     <el-button type="primary" @click="addEmp"> + 新增员工 </el-button>
-    <el-button type="danger" @click=""> - 批量删除 </el-button>
+    <el-button type="danger" @click="deleteByIds"> - 批量删除 </el-button>
   </div>
 
   <!-- 数据展示 -->
   <div class="container">
-    <el-table :data="empList" border style="width: 100%">
+    <el-table :data="empList" border style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column prop="name" label="姓名" width="120" align="center" />
       <el-table-column prop="gender" label="性别" width="120" align="center">
@@ -306,7 +375,8 @@ const edit = async (id) => {
           <el-button type="primary" size="small" @click="edit(scope.row.id)"> <el-icon>
               <Edit />
             </el-icon>编辑</el-button>
-          <el-button type="danger" size="small" @click=""> <el-icon>
+          <el-button type="danger" size="small" @click="deleteById(scope.row.id)
+            "> <el-icon>
               <Delete />
             </el-icon>删除</el-button>
         </template>

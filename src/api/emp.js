@@ -10,3 +10,6 @@ export const addApi = (emp) => request.post('/emps', emp)
 export const queryInfoApi = (id) => request.get(`/emps/${id}`)
 
 export const updateApi = (emp) => request.put('/emps', emp)
+
+// 删除员工
+export const deleteApi = (ids) => request.delete(`/emps?ids=${ids}`)
