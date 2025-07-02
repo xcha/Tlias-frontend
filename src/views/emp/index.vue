@@ -1,9 +1,11 @@
 <script setup>
-import { Search } from '@element-plus/icons-vue';
 import { ref, onMounted, watch } from 'vue'
 import { queryPageApi, addApi, deleteApi, queryInfoApi, updateApi } from '@/api/emp'
 import { queryAllApi as queryAllDeptApi } from '@/api/dept'
 import { ElMessage, ElMessageBox } from 'element-plus'
+
+const token=ref('')
+
 
 const searchEmp = ref({
   name: '',
@@ -16,7 +18,15 @@ const searchEmp = ref({
 onMounted(() => {
   search()
   queryAllDept()
+  getToken()
 })
+
+const getToken = () => {
+  const loginUser= JSON.parse(localStorage.getItem('loginUser'))
+  if(loginUser){
+    token.value = loginUser.token
+  }
+}
 
 const queryAllDept = async () => {
   const result = await queryAllDeptApi()
@@ -310,6 +320,8 @@ const deleteByIds = async () => {
   )
 }
 
+
+
 </script>
 
 <template>
@@ -467,8 +479,8 @@ const deleteByIds = async () => {
         <el-col :span="24">
           <el-form-item label="头像">
             <el-upload class="avatar-uploader" action="/api/upload" :show-file-list="false"
-              :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-              <img v-if="employee.image" :src="employee.image" class="avatar" />
+              :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :headers="{'token': token}">
+              <img v-if="employee.image" :src="employee.image" class="avatar"  />
               <el-icon v-else class="avatar-uploader-icon">
                 <Plus />
               </el-icon>

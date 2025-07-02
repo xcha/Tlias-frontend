@@ -1,4 +1,42 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useRouter } from 'vue-router'
+
+const loginName = ref('')
+const router = useRouter()
+
+onMounted(() => {
+  const loginUser = loginName.value = JSON.parse(localStorage.getItem('loginUser'))
+  if (loginUser) {
+    loginName.value = loginUser.name
+  }
+})
+
+
+const logout = () => {
+  ElMessageBox.confirm('是否退出登录？', '提示',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(async () => {
+      ElMessage({
+        type: 'success',
+        message: '退出登录成功',
+      })
+      localStorage.removeItem('loginUser')
+      router.push('/login')
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消退出登录',
+      })
+    })
+}
 
 </script>
 
@@ -14,10 +52,10 @@
               <EditPen />
             </el-icon> 修改密码 &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;
           </a>
-          <a href="">
+          <a href="javascript:void(0)" @click="logout">
             <el-icon>
               <SwitchButton />
-            </el-icon> 退出登录
+            </el-icon> 退出登录 【{{ loginName }}】
           </a>
         </span>
       </el-header>
@@ -28,11 +66,11 @@
           <!-- 左侧菜单栏 -->
           <el-menu router>
             <!-- 首页菜单 -->
-              <el-menu-item index="/index">
-                <el-icon>
-                  <Promotion />
-                </el-icon> 首页
-              </el-menu-item>
+            <el-menu-item index="/index">
+              <el-icon>
+                <Promotion />
+              </el-icon> 首页
+            </el-menu-item>
             <!-- 班级管理菜单 -->
             <el-sub-menu index="/manage">
               <template #title>
