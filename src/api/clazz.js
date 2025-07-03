@@ -13,11 +13,18 @@ export const queryAllApi = () => {
     })
 }
 
-export const addApi = (dept) => {
+export const queryAllApi2 = () => {
+    return request({
+        url: '/emps/list',
+        method: 'get'
+    })
+}
+
+export const addApi = (clazz) => {
     return request({
         url: '/clazzs',
         method: 'post',
-        data: dept
+        data: clazz
     })
 }
 
@@ -42,3 +49,4 @@ export const deleteByIdApi = (id) => {
         method: 'delete'
     })
 }
+
